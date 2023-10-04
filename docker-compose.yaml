@@ -14,3 +14,4 @@ services:
 
 networks:
   sample_django_net:
+    external: true
