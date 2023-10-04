@@ -9,3 +9,8 @@ services:
     restart: always
     ports:
       - "8000:8000"  # Map port 8000 from the container to the host
+    networks:
+      - sample_django_net
+
+networks:
+  sample_django_net:
