@@ -1,41 +1,36 @@
-pipeline {
+pipeline{
     agent any
-
-    environment {
-        GITHUB_CREDENTIALS = credentials('github-credentials')
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
-    }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the source code from GitHub
-                script {
-                    def scmVars = checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/asadiitju40/sample_django.git', credentialsId: GITHUB_CREDENTIALS.id]]])
+    // check the connectivity with github
+    stages{
+        stage("Checkout"){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/asadiitju40/sample_django']])
+            }
+            post{
+                success{
+                    echo "========Checked out successfully========"
+                }
+                failure{
+                    echo "========Checkout failed========"
                 }
             }
         }
-
-        stage('Build and Push Docker Image') {
+                // building images
+        stage('Build Docker Image') {
             steps {
                 // Build Docker image
                 script {
-                    def dockerImage = docker.build("asadiitju/sample_django:${env.BUILD_NUMBER}", "-f Dockerfile .")
-                }
-
-                // Push Docker image to Docker Hub
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        dockerImage.push()
-                    }
+                    def dockerImage = docker.build("asadiitju/sample_django:${BUILD_NUMBER}", "-f Dockerfile .")
                 }
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Docker image built and pushed successfully!'
+            post{
+                success{
+                    echo "========Build Docker Image successfully========"
+                }
+                failure{
+                    echo "========Build Docker Image failed========"
+                }
+            }            
         }
     }
 }
