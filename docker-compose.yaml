@@ -1,0 +1,11 @@
+version: '3'
+services:
+  sample_django:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Path to your Dockerfile
+    image: sample_django_image  # Name for the built image
+    container_name: sample_django_container  # Name for the container
+    restart: always
+    ports:
+      - "8000:8000"  # Map port 8000 from the container to the host
