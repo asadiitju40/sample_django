@@ -2,7 +2,7 @@ pipeline{
     agent any
     // check the connectivity with github
     stages{
-        stage("Checkout"){
+        stage("Github Checkout"){
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-credentials', url: 'https://github.com/asadiitju40/sample_django']])
             }
